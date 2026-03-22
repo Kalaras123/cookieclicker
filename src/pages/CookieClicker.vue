@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 
 let cookies = ref(0);
 let mode = ref('buy');
@@ -24,17 +24,27 @@ let gambleArea = ref(null);
 let gambleInterval;
 let gambleTimeout;
 let gambleCookieTimeout;
+let cookieInterval;
 
-setInterval(() => {
-    cookies.value += cps.value;
-}, 1000);
+onMounted(() => {
+    cookieInterval = setInterval(() => {
+        cookies.value += cps.value;
+    }, 1000);
+})
+
+onUnmounted(() => {
+    clearInterval(cookieInterval);
+    clearInterval(gambleInterval);
+    clearTimeout(gambleTimeout);
+    clearTimeout(gambleCookieTimeout);
+})
 
 function setMode(newMode){
     mode.value = newMode;
 }
 
 function cookieClick(){
-    cookies.value += 100;
+    cookies.value += 1;
 }
 
 function buyBuilding(building){
